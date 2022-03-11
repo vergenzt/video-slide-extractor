@@ -40,9 +40,8 @@ FrameMatcher = Callable[["Frame", "Frame"], bool]
 
 
 def frames_match(correlation_threshold: float, frame1: Frame, frame2: Frame) -> bool:
-    tmpl_match = cv.matchTemplate(frame1.image, frame2.image, method=cv.TM_CCORR_NORMED)
-    min, _max, _minLoc, _maxLoc = cv.minMaxLoc(tmpl_match)
-    return min > correlation_threshold
+    match: NDArray = cv.matchTemplate(frame1.image, frame2.image, method=cv.TM_CCORR_NORMED)
+    return (match > correlation_threshold).all() # type: ignore
 
 
 @dataclass
