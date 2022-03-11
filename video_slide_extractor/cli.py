@@ -1,9 +1,10 @@
 """
 # video-slide-extractor
 
-Finds runs of consecutive similar frames from a video file, and exports first and/or
-last frames from each run as images. Useful for e.g. extracting slides from a recorded
-presentation.
+```
+Command line utility to find runs of consecutive similar frames from a video file, and
+export first and/or last frames from each run as images. Useful for e.g. extracting
+slides from a recorded presentation.
 
 Lists exported image file paths on stdout.
 
@@ -50,7 +51,7 @@ OPTIONS:
 
 
 {outfile_format_docs}
-
+```
 
 Inspired by https://github.com/szanni/slideextract.
 """
