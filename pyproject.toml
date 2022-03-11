@@ -11,10 +11,27 @@ docopt = "^0.6.2"
 single-source = "^0.3.0"
 tqdm = "^4.63.0"
 more-itertools = "^8.12.0"
+ipdb = {version = "^0.13.9", optional = true}
 
 [tool.poetry.dev-dependencies]
-ipdb = "^0.13.9"
 black = "^22.1.0"
+pre-commit = "^2.17.0"
+flake8 = "^4.0.1"
+mypy = "^0.931"
+pre-commit-hooks = "^4.1.0"
+
+[tool.poetry.extras]
+debug = ["ipdb"]
+
+[tool.poetry.scripts]
+slide-extractor = 'video_slide_extractor:cli.main'
+
+[tool.isort]
+profile = "black"
+
+[tool.pylint]
+messages_control = {disable = "C0330, C0326"}
+format = {max-line-length = "88"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
