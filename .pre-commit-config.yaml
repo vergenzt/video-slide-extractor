@@ -39,5 +39,5 @@ repos:
     - id: gen_readme
       name: Generate README.md from help text
       language: system
-      entry: slide-extractor -h > README.md
+      entry: bash -c 'slide-extractor -h > README.md'
       always_run: true

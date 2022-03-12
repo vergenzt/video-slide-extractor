@@ -1,7 +1,6 @@
 """
 # video-slide-extractor
 
-```
 Command line utility to find runs of consecutive similar frames from a video file, and
 export first and/or last frames from each run as images. Useful for e.g. extracting
 slides from a recorded presentation.
@@ -9,49 +8,48 @@ slides from a recorded presentation.
 Lists exported image file paths on stdout.
 
 
-Usage:
-  {program} <video_file>
+USAGE:
+    {program} <video_file>
             [-b <beg_outfmt>] [-e <end_outfmt>]
             [-s <sample_rate>] [-c <corr>]
             [-d | --debug]
-
-  {program} (-h | --help)
-  {program} (-v | --version)
+    {program} (-h | --help)
+    {program} (-v | --version)
 
 
 OPTIONS:
 
-  -b, --begfmt <string>
+    -b, --begfmt <string>
         OUTFILE FORMAT STRING to determine filename for first frame in each run
         [default: none]
 
-  -e, --endfmt <string>
+    -e, --endfmt <string>
         OUTFILE FORMAT STRING to determine filename for last frame in each run
         [default: %f__%t.png]
 
-  -s, --sample-rate ( <float|int>fps | <float|int>% )
+    -s, --sample-rate ( <float|int>fps | <float|int>% )
         approximate frequency with which to sample video frames to check for changes.
         must be suffixed with "fps" or "%". an fps value is divided into the source
         video's native framerate in FPS to determine # frames to skip each iteration. a
         percentage value is interpreted as a percentage of the source video's native
         framerate and handled similarly. [default: 1.0fps]
 
-  -c, --correlation-threshold <float>
+    -c, --correlation-threshold <float>
         correlation threshold above which two frames are considered the same
         [default: 0.999]
 
-  -d, --debug
+    -d, --debug
         drop into an ipdb debugger for every run found; requires [debug] extra
 
-  -h, --help
+    -h, --help
         print help
 
-  -v, --version
+    -v, --version
         print version
 
 
 {outfile_format_docs}
-```
+
 
 Inspired by https://github.com/szanni/slideextract.
 """

@@ -1,14 +1,16 @@
 """
 OUTFILE FORMAT STRINGS:
-  %%              Literal percent sign
-  %f              Path to input video file, but without its extension
-  %d              Path to directory containing the input video file
-  %[W]n           Index of the extracted run, starting from 0
-  %[W]N           Index of the extracted run, starting from 1
-  %t    / %T      Timestamp of first/last frame, in timedelta format (H:MM:SS)
-  %[W]s / %[W]S   Timestamp of first/last frame, in seconds since start
-  %[W]m / %[W]M   Timestamp of first/last frame, in ms since start
-  %[W]i / %[W]I   Frame number of first/last frame, with optional pad width
+
+    %%              Literal percent sign
+    %f              Path to input video file, but without its extension
+    %d              Path to directory containing the input video file
+    %[W]n           Index of the extracted run, starting from 0
+    %[W]N           Index of the extracted run, starting from 1
+    %t    / %T      Timestamp of first/last frame, in timedelta format (H:MM:SS)
+    %[W]s / %[W]S   Timestamp of first/last frame, in seconds since start
+    %[W]m / %[W]M   Timestamp of first/last frame, in ms since start
+    %[W]i / %[W]I   Frame number of first/last frame, with optional pad width
+
 
 [W] above indicates an optional numeric width to zero-pad the attribute to.
 """
@@ -34,7 +36,7 @@ TAGS: Dict[str, Fmter] = dict(
     [("%", Fmter(lambda _: "%"))],
     # use kwargs for the rest so Python can catch duplicates
     # (https://stackoverflow.com/a/22242922)
-    f=Fmter(lambda s: s.source),
+    f=Fmter(lambda s: s.source.with_suffix("")),
     d=Fmter(lambda s: s.source.parent),
     n=Fmter(lambda s: s.index, True),
     N=Fmter(lambda s: s.index0, True),
