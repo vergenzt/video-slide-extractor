@@ -84,7 +84,8 @@ def process_file(file: Path, matcher: FrameMatcher, args: Any):
             if (outfmt := args[argname]) and outfmt != "none":
                 fmter = OutputPathFormatter(slide, outfmt)
                 path = fmter.output_path()
-                tqdm.write(path)
+                path.parent.mkdir(parents=True, exist_ok=True)
+                tqdm.write(str(path))
                 cv.imwrite(str(path), image)
 
 

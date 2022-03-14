@@ -78,4 +78,4 @@ class OutputPathFormatter:
         return out
 
     def output_path(self) -> Path:
-        return self._OUTFMT_RE.sub(self._outfmt_repl, self.outfmt)
+        return Path(self._OUTFMT_RE.sub(self._outfmt_repl, self.outfmt))

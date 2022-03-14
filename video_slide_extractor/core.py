@@ -85,12 +85,13 @@ class VideoSlideExtractor:
         return split_when(self.frames(), lambda *a: not self.frame_matcher(*a))
 
     def slides(self) -> Iterator[Slide]:
+        frame_runs = self.frame_runs()
         progress = self.progress(unit=" slides")
         return side_effect(
             lambda _: progress.update(),
             (
                 Slide(i, first(frame_run), last(frame_run))
-                for i, frame_run in enumerate(self.frame_runs())
+                for i, frame_run in enumerate(frame_runs)
             ),
         )
 
