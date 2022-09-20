@@ -3,6 +3,7 @@ name = "video-slide-extractor"
 version = "0.1.0"
 description = "Command line utility to extract unique images from video files."
 authors = ["Tim Vergenz <vergenzt@gmail.com>"]
+repository = "https://github.com/vergenzt/video-slide-extractor"
 readme = "README.md"
 
 [tool.poetry.dependencies]

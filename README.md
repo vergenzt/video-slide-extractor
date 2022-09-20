@@ -8,7 +8,7 @@ Lists exported image file paths on stdout.
 
 
 USAGE:
-    slide-extractor <video_file>
+    slide-extractor <video_file> ...
             [-b <beg_outfmt>] [-e <end_outfmt>]
             [-s <sample_rate>] [-c <corr>]
             [-d | --debug]
@@ -50,14 +50,15 @@ OPTIONS:
 OUTFILE FORMAT STRINGS:
 
     %%              Literal percent sign
-    %f              Path to input video file, but without its extension
     %d              Path to directory containing the input video file
+    %F              Basename of input video file, without extension
+    %f              Path to input video file, without extension (equivalent to %d/%F)
     %[W]n           Index of the extracted run, starting from 0
     %[W]N           Index of the extracted run, starting from 1
     %t    / %T      Timestamp of first/last frame, in timedelta format (H:MM:SS)
     %[W]s / %[W]S   Timestamp of first/last frame, in seconds since start
     %[W]m / %[W]M   Timestamp of first/last frame, in ms since start
-    %[W]i / %[W]I   Frame number of first/last frame, with optional pad width
+    %[W]i / %[W]I   Frame number of first/last frame
 
 
 [W] above indicates an optional numeric width to zero-pad the attribute to.

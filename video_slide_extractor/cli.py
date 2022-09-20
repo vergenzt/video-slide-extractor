@@ -9,7 +9,7 @@ Lists exported image file paths on stdout.
 
 
 USAGE:
-    {program} <video_file>
+    {program} <video_file> ...
             [-b <beg_outfmt>] [-e <end_outfmt>]
             [-s <sample_rate>] [-c <corr>]
             [-d | --debug]
@@ -65,26 +65,13 @@ from docopt import docopt
 from single_source import get_version
 from tqdm import tqdm
 
-from .core import VideoSlideExtractor, frames_match
+from .core import FrameMatcher, VideoSlideExtractor, frames_match
 from .output_path_format import OutputPathFormatter
 from .output_path_format import __doc__ as outfile_format_docs
 
 
-def main():
-    version: str = str(get_version(__name__, Path(__file__).parent))
-    program: str = Path(argv[0]).name
-    doc: str = str(__doc__).format(
-        program=program, outfile_format_docs=str(outfile_format_docs).strip()
-    )
-    args: dict[str, Any] = docopt(doc=doc, version=version)
-
-    matcher = partial(frames_match, float(args["--correlation-threshold"]))
-    extractor = VideoSlideExtractor(
-        Path(args["<video_file>"]), args["--sample-rate"], matcher
-    )
-
-    progress = tqdm(total=int(extractor.total_frames()), unit=" frames")
-    extractor._on_update = progress.update
+def process_file(file: Path, matcher: FrameMatcher, args: Any):
+    extractor = VideoSlideExtractor(file, args["--sample-rate"], matcher)
 
     for slide in extractor.slides():
         if args["--debug"]:
@@ -97,12 +84,22 @@ def main():
             if (outfmt := args[argname]) and outfmt != "none":
                 fmter = OutputPathFormatter(slide, outfmt)
                 path = fmter.output_path()
-                progress.clear()
-                print(path)
-                progress.refresh()
+                path.parent.mkdir(parents=True, exist_ok=True)
+                tqdm.write(str(path))
                 cv.imwrite(str(path), image)
 
-    progress.close()
+
+def main():
+    version: str = str(get_version(__name__, Path(__file__).parent))
+    program: str = Path(argv[0]).name
+    doc: str = str(__doc__).format(
+        program=program, outfile_format_docs=str(outfile_format_docs).strip()
+    )
+    args: dict[str, Any] = docopt(doc=doc, version=version)
+
+    matcher = partial(frames_match, float(args.pop("--correlation-threshold")))
+    for path in tqdm(args.pop("<video_file>"), unit=" files"):
+        process_file(Path(path), matcher, args)
 
 
 if __name__ == "__main__":

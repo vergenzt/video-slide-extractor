@@ -4,11 +4,12 @@ from dataclasses import dataclass, field
 from datetime import timedelta
 from functools import cached_property
 from pathlib import Path
-from typing import Callable, Iterator, TypeAlias
+from typing import Callable, Iterator, Optional, Protocol, Type, TypeAlias
 
 import cv2 as cv
-from more_itertools import first, last, split_when
+from more_itertools import first, last, side_effect, split_when
 from numpy.typing import NDArray
+from tqdm import tqdm
 
 Image: TypeAlias = NDArray
 
@@ -21,13 +22,21 @@ def frames_match(correlation_threshold: float, frame1: Frame, frame2: Frame) -> 
     return (match > correlation_threshold).all()  # type: ignore
 
 
+class ProgressUpdater(Protocol):
+    def __init__(self, unit: str, total: Optional[int] = None):
+        ...
+
+    def update(self, n: int = 1):
+        ...
+
+
 @dataclass
 class VideoSlideExtractor:
     path: Path
     sample_rate: str
     frame_matcher: FrameMatcher
+    progress: Type[ProgressUpdater] = tqdm  # type: ignore
     _capture: cv.VideoCapture = field(init=False)
-    _on_update: Callable = lambda: ...
 
     def __post_init__(self):
         self._capture = cv.VideoCapture(str(self.path))
@@ -65,19 +74,25 @@ class VideoSlideExtractor:
 
     def frames(self) -> Iterator[Frame]:
         fnum = 0
+        progress = self.progress(unit=" frames", total=self.total_frames())
         while self._capture.grab():
             if fnum % self.frame_sample_period == 0:
                 yield self.current_frame()
             fnum += 1
-            self._on_update()
+            progress.update()
 
     def frame_runs(self) -> Iterator[list[Frame]]:
         return split_when(self.frames(), lambda *a: not self.frame_matcher(*a))
 
     def slides(self) -> Iterator[Slide]:
-        return (
-            Slide(i, first(frame_run), last(frame_run))
-            for i, frame_run in enumerate(self.frame_runs())
+        frame_runs = self.frame_runs()
+        progress = self.progress(unit=" slides")
+        return side_effect(
+            lambda _: progress.update(),
+            (
+                Slide(i, first(frame_run), last(frame_run))
+                for i, frame_run in enumerate(frame_runs)
+            ),
         )
 
 
